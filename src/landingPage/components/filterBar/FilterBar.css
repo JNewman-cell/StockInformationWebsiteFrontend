@@ -1,0 +1,299 @@
+.filters-container {
+  background: var(--gradient-card);
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: 70%;
+  border: 1px solid var(--color-border-light);
+  /* keep height consistent with search card; use a CSS variable with fallback */
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+}
+/* header removed: layout simplified to match SearchBar */
+
+.filters-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 14px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.filters-actions .filters-badge {
+  margin-left: 0.25rem;
+}
+
+.filters-badge.action-badge {
+  /* slightly smaller pill when in actions */
+  padding: 0.2rem 0.45rem;
+  font-size: 0.75rem;
+}
+
+.filters-badge i {
+  font-size: 0.75rem;
+}
+
+.filters-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.filters-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 0;
+  width: auto;
+  margin-left: auto; /* push actions to the end of the current row */
+  align-self: center; /* vertically center with other filter chips */
+  /* Reserve space for Apply All, filter badge, and Reset even when hidden. */
+  /* Use a fixed basis so filters sizing stays stable on wide screens. */
+  flex: 0 0 260px;
+  min-width: 220px;
+  justify-content: flex-end;
+}
+
+.filters-badge .badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center; /* align chips and action buttons on the same baseline */
+}
+
+/* Make each range filter expand to take remaining horizontal space while
+   keeping actions pinned to the end of the row. Each filter will have a
+   sensible minimum width so it doesn't shrink too small. */
+.filters-row .filter-dropdown-container {
+  flex: 1 1 0;
+  min-width: 120px;
+}
+
+.filters-row .filter-dropdown-button {
+  /* let the button fill its container so the visible chip grows */
+  width: 100%;
+}
+
+.filter-dropdown-button {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 100px;
+  justify-content: space-between;
+}
+
+.filter-dropdown-button:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-2);
+}
+
+.filter-dropdown-button.dirty {
+  border-color: var(--color-primary);
+  background: var(--gradient-primary-light);
+  color: var(--color-primary);
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform var(--transition-base);
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: var(--space-1);
+}
+
+.filter-dropdown-content {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-xl);
+  min-width: 200px;
+}
+
+.filter-dropdown-content h4 {
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-3) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-group {
+  margin-bottom: var(--space-3);
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group label {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.filter-group input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: #fff;
+  color: var(--color-text-on-surface);
+  transition: all var(--transition-base);
+}
+
+.filter-group input:hover {
+  border-color: var(--color-border-strong);
+}
+
+.filter-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.apply-filter-button {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--gradient-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-top: var(--space-2);
+}
+
+.apply-filter-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.input-invalid {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.06);
+}
+
+.invalid-message {
+  color: var(--color-error);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.apply-all-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  /* match filter chip sizing */
+  padding: 0.5rem 0.75rem;
+  min-width: 100px;
+  background: var(--gradient-primary);
+  color: #fff;
+  /* keep gradient unobstructed: no border and a slightly larger pill radius */
+  border: none;
+  border-radius: var(--radius-xl);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  line-height: 1;
+  box-sizing: border-box;
+  height: auto;
+}
+
+.apply-all-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.apply-all-button .badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.filter-reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-sizing: border-box;
+}
+
+.filter-reset-button:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: var(--color-error-light);
+}
+
+/* Disabled state for reset button when there is nothing to reset */
+.filter-reset-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  /* keep the same background but visually subdued */
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+

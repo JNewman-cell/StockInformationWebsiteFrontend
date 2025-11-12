@@ -1,0 +1,78 @@
+/* Typography utilities */
+.heading-3xl { font-size: var(--font-size-3xl); line-height: var(--line-tight); font-weight: 800; letter-spacing: -0.02em; }
+.heading-2xl { font-size: var(--font-size-2xl); line-height: var(--line-tight); font-weight: 800; letter-spacing: -0.01em; }
+.heading-xl  { font-size: var(--font-size-xl);  line-height: var(--line-tight); font-weight: 700; letter-spacing: -0.01em; }
+.heading-lg  { font-size: var(--font-size-lg);  line-height: var(--line-tight); font-weight: 600; }
+.heading-md  { font-size: var(--font-size-md);  line-height: var(--line-base); font-weight: 600; }
+.text-base   { font-size: var(--font-size-base); line-height: var(--line-base); }
+.text-sm     { font-size: var(--font-size-sm);   line-height: var(--line-base); }
+.text-xs     { font-size: var(--font-size-xs);   line-height: var(--line-base); }
+.text-muted  { color: var(--color-text-muted); }
+.text-bold   { font-weight: 700; }
+.text-semibold { font-weight: 600; }
+.mono        { font-family: var(--font-mono); }
+
+/* Layout utilities */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+/* Stack utilities: add top margin to siblings */
+.stack-2 > * + * { margin-top: var(--space-2); }
+.stack-3 > * + * { margin-top: var(--space-3); }
+.stack-4 > * + * { margin-top: var(--space-4); }
+.stack-6 > * + * { margin-top: var(--space-6); }
+
+/* Visually hidden (sr-only) */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Containers */
+/* Note: Base .container definition is in theme.css with responsive breakpoints */
+.container-xl { width: 100%; max-width: var(--container-xl); margin-inline: auto; padding-inline: var(--space-4); }
+.container-lg { width: 100%; max-width: var(--container-lg); margin-inline: auto; padding-inline: var(--space-4); }
+.container-md { width: 100%; max-width: var(--container-md); margin-inline: auto; padding-inline: var(--space-4); }
+.container-sm { width: 100%; max-width: var(--container-sm); margin-inline: auto; padding-inline: var(--space-4); }
+
+/* Motion & focus */
+:focus-visible { 
+  outline: none; 
+  box-shadow: var(--focus-ring); 
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all var(--transition-base);
+}
+
+.transition-colors {
+  transition: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
+}

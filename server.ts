@@ -2,34 +2,49 @@ import { serve } from 'bun';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
+const PORT = 3000;
+
 const server = serve({
-  port: 3000,
+  port: PORT,
   async fetch(req) {
     const url = new URL(req.url);
-    
-    // Serve the HTML file for the root path
+
+    // Handle favicon requests
+    if (url.pathname === '/favicon.ico') {
+      try {
+        const favicon = Bun.file('./public/favicon.ico');
+        if (await favicon.exists()) {
+          return new Response(favicon);
+        }
+      } catch {
+        // Favicon not found
+      }
+      return new Response(null, { status: 204 });
+    }
+
+    // Serve the root HTML file
     if (url.pathname === '/') {
       const html = readFileSync('./public/index.html', 'utf-8');
       return new Response(html, {
-        headers: { 'Content-Type': 'text/html' }
+        headers: { 'Content-Type': 'text/html' },
       });
     }
-    
-    // Handle TypeScript/JSX files - transpile them
+
+    // Transpile TypeScript/JSX files
     if (url.pathname.endsWith('.tsx') || url.pathname.endsWith('.ts')) {
       try {
         const filePath = join('.', url.pathname);
-        const file = Bun.file(filePath);
         const transpiled = await Bun.build({
           entrypoints: [filePath],
           target: 'browser',
           format: 'esm',
         });
-        
-        if (transpiled.outputs.length > 0) {
-          const output = await transpiled.outputs[0].text();
+
+        const firstOutput = transpiled.outputs[0];
+        if (firstOutput) {
+          const output = await firstOutput.text();
           return new Response(output, {
-            headers: { 'Content-Type': 'application/javascript' }
+            headers: { 'Content-Type': 'application/javascript' },
           });
         }
       } catch (error) {
@@ -37,8 +52,8 @@ const server = serve({
         return new Response(`Error: ${error}`, { status: 500 });
       }
     }
-    
-    // Serve other static files
+
+    // Serve static files
     try {
       const filePath = join('.', url.pathname);
       const file = Bun.file(filePath);

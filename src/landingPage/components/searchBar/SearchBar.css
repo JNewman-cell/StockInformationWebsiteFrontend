@@ -1,0 +1,238 @@
+.search-bar-container {
+  position: relative;
+  width: 30%;
+  background: var(--gradient-card);
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-light);
+  /* match the filter bar height via a shared variable (fallback to 96px) */
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header removed to match compact layout with FilterBar */
+
+.search-form {
+  display: flex;
+  width: 100%;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* input wrapper holds the visual input card so button can sit separately */
+.input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.input-wrapper .search-input {
+  width: 100%;
+  display: block;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 0.6rem 0.9rem;
+  padding-left: 2.6rem; /* space for the icon */
+  padding-right: 2.6rem; /* space for the clear button */
+  transition: all var(--transition-base);
+}
+
+.input-wrapper .search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring), var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* decorative only */
+}
+
+/* Clear (X) button inside the input */
+.clear-button {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent; /* no circle background */
+  border: none;
+  color: var(--color-negative); /* red X */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.15rem; /* small click target */
+  border-radius: 4px;
+}
+
+.clear-button svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor; /* SVG inherits the red color */
+}
+
+.clear-button:hover {
+  background: rgba(239,68,68,0.06); /* subtle red tint on hover */
+}
+
+.clear-button:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.input-icon svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* .search-input rules are moved into .input-wrapper .search-input to give it its own card */
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.search-button {
+  padding: 0.7rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.search-button::before {
+  /* emoji removed; no pseudo content for search button */
+  content: none;
+}
+
+.search-button:hover {
+  background: var(--gradient-accent);
+  box-shadow: var(--shadow-colored);
+}
+
+.search-button:active {
+  transform: scale(0.98);
+}
+
+/* When reusing the filter bar's apply styles for the search button,
+   make it sit inline and not take full width inside the search form. */
+.search-form .apply-filter-button {
+  width: auto; /* don't stretch full width */
+  margin-top: 0; /* align with input row */
+  padding: 0.6rem 1rem; /* slightly tighter */
+  border-radius: var(--radius-md);
+}
+
+.search-form .apply-filter-button .apply-count-badge {
+  display: none; /* search button doesn't need the count badge */
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 11;
+  animation: slideDown 0.2s ease-out;
+}
+
+.suggestion-item {
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  transition: all var(--transition-base);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: linear-gradient(to right, var(--color-surface-2), var(--color-surface));
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--color-primary);
+}
+
+.suggestion-item.loading,
+.suggestion-item.no-results {
+  cursor: default;
+  color: var(--color-text-muted);
+  justify-content: center;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.suggestion-item.loading:hover,
+.suggestion-item.no-results:hover {
+  background: var(--color-surface);
+  padding-left: 1rem;
+  border-left: none;
+}
+
+.suggestion-symbol {
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 60px;
+  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.suggestion-name {
+  color: var(--color-text-on-surface);
+  font-size: 0.9rem;
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Scrollbar styling for suggestions */
+.suggestions-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-track {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-sm);
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-600);
+}

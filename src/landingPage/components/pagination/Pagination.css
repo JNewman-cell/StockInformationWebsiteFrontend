@@ -1,0 +1,202 @@
+/* Pagination styles (migrated from Landing.css and TickerSummaryTable.css)
+   This file contains all pagination related styling including the
+   layout for table-wrapped pagination (.table-with-pagination). */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: var(--space-4);
+  flex-wrap: nowrap;
+  padding: var(--space-4) 0;
+}
+
+/* When pagination is placed directly under the table (wrapped by
+   .table-with-pagination) it should stretch the full width and
+   present left/center/right groups for flexible layout. */
+.table-with-pagination {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.table-with-pagination .pagination {
+  width: 100%;
+  margin-top: 0; /* sit flush under the table */
+  /* increase vertical padding slightly so scaled/active buttons have room */
+  padding: 0.75rem 0.75rem;
+  border-top: 1px solid var(--color-border-light);
+  background: var(--color-surface);
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.table-with-pagination .pagination-left,
+.table-with-pagination .pagination-center,
+.table-with-pagination .pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.table-with-pagination .pagination-center {
+  flex: 1 1 auto;
+  justify-content: center;
+  /* allow scaled/active page buttons to overflow vertically instead of
+     being clipped by the center container */
+  overflow: visible;
+  gap: 0.25rem;
+}
+
+.table-with-pagination .pagination-right {
+  justify-content: flex-end;
+}
+
+.pagination-left,
+.pagination-center,
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.pagination-btn svg {
+  vertical-align: -2px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-colored);
+}
+
+.pagination-btn:active:not(:disabled) {
+  transform: translateY(0) scale(1.0);
+}
+
+.pagination-btn:disabled {
+  background: var(--color-border-strong);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.page-number {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-on-surface);
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  font-size: 0.9rem;
+  transition: all var(--transition-base);
+}
+
+.page-number:hover {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.page-number.active {
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+  transform: scale(1.1);
+}
+
+.page-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-on-surface);
+  background: var(--color-surface-2);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  flex-wrap: nowrap;
+}
+
+.page-input-container > span {
+  white-space: nowrap;
+}
+
+.page-input {
+  min-width: 80px;
+  width: 10ch;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all var(--transition-base);
+}
+
+@media (min-width: 900px) {
+  .page-input {
+    min-width: 110px;
+    width: 12ch;
+  }
+}
+
+.page-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.go-to-page-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.go-to-page-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.go-to-page-btn:disabled {
+  background: var(--color-border-strong);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination-info {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}

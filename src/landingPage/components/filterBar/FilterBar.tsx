@@ -1,0 +1,328 @@
+import type { FC } from 'react';
+import { useState, useCallback } from 'react';
+import { FILTER_DEFAULTS } from '../../../config/constants';
+import type { FilterOptions, FilterChangeHandler } from './types';
+import RangeFilter from './components/RangeFilter';
+import './FilterBar.css';
+
+const getAppliedFiltersCount = (filters: FilterOptions): number => {
+  let count = 0;
+  const filterKeys: Array<keyof FilterOptions> = [
+    'minPreviousClose',
+    'maxPreviousClose',
+    'minPe',
+    'maxPe',
+    'minForwardPe',
+    'maxForwardPe',
+    'minDividendYield',
+    'maxDividendYield',
+    'minMarketCap',
+    'maxMarketCap',
+    'minPayoutRatio',
+    'maxPayoutRatio',
+  ];
+
+  filterKeys.forEach(key => {
+    if (filters[key] !== undefined) {
+      count++;
+    }
+  });
+
+  return count;
+};
+
+const getDirtyFilterTypesCount = (dirtyFilters: Set<keyof FilterOptions>): number => {
+  const filterTypeMap = new Map<string, boolean>();
+
+  dirtyFilters.forEach(field => {
+    let filterType = '';
+    if (field.includes('PreviousClose')) filterType = 'price';
+    else if (field.includes('Pe') && !field.includes('Forward')) filterType = 'pe';
+    else if (field.includes('ForwardPe')) filterType = 'forwardPe';
+    else if (field.includes('Dividend')) filterType = 'dividend';
+    else if (field.includes('MarketCap')) filterType = 'marketCap';
+    else if (field.includes('Payout')) filterType = 'payout';
+
+    if (filterType) {
+      filterTypeMap.set(filterType, true);
+    }
+  });
+
+  return filterTypeMap.size;
+};
+
+interface FiltersProps {
+  // second argument signals special intent (reset)
+  onFilterChange: FilterChangeHandler;
+}
+
+const Filters: FC<FiltersProps> = ({ onFilterChange }) => {
+  const [appliedFilters, setAppliedFilters] = useState<FilterOptions>(FILTER_DEFAULTS);
+  const [pendingFilters, setPendingFilters] = useState<FilterOptions>(FILTER_DEFAULTS);
+  const [dirtyFilters, setDirtyFilters] = useState<Set<keyof FilterOptions>>(new Set());
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
+  const [resetCounter, setResetCounter] = useState(0);
+
+  const handlePendingFilterUpdate = useCallback((key: keyof FilterOptions, value: unknown) => {
+    setPendingFilters(prev => ({ ...prev, [key]: value }));
+
+    setDirtyFilters(prev => {
+      const newDirty = new Set(prev);
+      if (appliedFilters[key] !== value) {
+        newDirty.add(key);
+      } else {
+        newDirty.delete(key);
+      }
+      return newDirty;
+    });
+  }, [appliedFilters]);
+
+  const handleApplyRangeFilter = useCallback(
+    (
+      minKey: keyof FilterOptions,
+      maxKey: keyof FilterOptions,
+      minValue?: number,
+      maxValue?: number
+    ) => {
+      // build the updated filters object from the latest appliedFilters state
+      const updated: FilterOptions = {
+        ...appliedFilters,
+        [minKey]: minValue,
+        [maxKey]: maxValue,
+        page: 1,
+      } as FilterOptions;
+
+      // update local state
+      setAppliedFilters(updated);
+      setPendingFilters(prev => ({ ...prev, [minKey]: minValue, [maxKey]: maxValue }));
+
+      // update dirty set synchronously
+      setDirtyFilters(prev => {
+        const newDirty = new Set(prev);
+        newDirty.delete(minKey);
+        newDirty.delete(maxKey);
+        return newDirty;
+      });
+
+      // close the dropdown and blur any focused inputs so UI is unfocused before parent update
+      setOpenFilter(null);
+      try {
+        (document.activeElement as HTMLElement | null)?.blur();
+      } catch (e) {
+        // ignore in non-browser environments
+      }
+
+      // call parent filter change async to avoid setState during render of another component
+      Promise.resolve().then(() => onFilterChange(updated));
+    },
+    [onFilterChange, appliedFilters]
+  );
+
+  const handleApplyAll = useCallback(() => {
+    setAppliedFilters(pendingFilters);
+    setDirtyFilters(new Set());
+    // close any open filter dropdowns and remove focus from inputs
+    setOpenFilter(null);
+    try {
+      // blur active element (if any input inside a RangeFilter is focused)
+      (document.activeElement as HTMLElement | null)?.blur();
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+    // call parent filter change asynchronously to avoid setState-in-render
+    Promise.resolve().then(() => onFilterChange(pendingFilters));
+  }, [pendingFilters, onFilterChange]);
+
+  const handleReset = useCallback(() => {
+    setAppliedFilters(FILTER_DEFAULTS);
+    setPendingFilters(FILTER_DEFAULTS);
+    setDirtyFilters(new Set());
+    setOpenFilter(null);
+    // bump a counter so children can clear their internal pending inputs
+    setResetCounter(c => c + 1);
+  // call parent update asynchronously to avoid setState during child render
+  // signal this is an explicit reset so parent can choose to reset sort
+  Promise.resolve().then(() => onFilterChange(FILTER_DEFAULTS, { reset: true }));
+  }, [onFilterChange]);
+
+  const handleFilterToggle = useCallback((filterKey: string) => {
+    setOpenFilter(current => current === filterKey ? null : filterKey);
+  }, []);
+
+  // number of individual dirty filter fields (min/max keys)
+  const dirtyCount = dirtyFilters.size;
+  const hasDirtyFilters = dirtyCount > 0;
+  const appliedCount = getAppliedFiltersCount(appliedFilters);
+
+  return (
+    <div className="filters-container">
+
+      {/* badge moved into actions so it appears next to Reset */}
+
+      <div className="filters-row">
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="price"
+          label="Price"
+          minKey="minPreviousClose"
+          maxKey="maxPreviousClose"
+          appliedMinValue={appliedFilters.minPreviousClose}
+          appliedMaxValue={appliedFilters.maxPreviousClose}
+          isOpen={openFilter === 'price'}
+          onToggle={() => handleFilterToggle('price')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minPreviousClose', 'maxPreviousClose', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minPreviousClose', minValue);
+            handlePendingFilterUpdate('maxPreviousClose', maxValue);
+          }}
+          title="Previous Close Price"
+          minPlaceholder="Min"
+          maxPlaceholder="Max"
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="marketCap"
+          label="Market Cap"
+          minKey="minMarketCap"
+          maxKey="maxMarketCap"
+          appliedMinValue={appliedFilters.minMarketCap}
+          appliedMaxValue={appliedFilters.maxMarketCap}
+          isOpen={openFilter === 'marketCap'}
+          onToggle={() => handleFilterToggle('marketCap')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minMarketCap', 'maxMarketCap', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minMarketCap', minValue);
+            handlePendingFilterUpdate('maxMarketCap', maxValue);
+          }}
+          title="Market Cap"
+          minPlaceholder="Min"
+          maxPlaceholder="Max"
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="pe"
+          label="P/E"
+          minKey="minPe"
+          maxKey="maxPe"
+          appliedMinValue={appliedFilters.minPe}
+          appliedMaxValue={appliedFilters.maxPe}
+          isOpen={openFilter === 'pe'}
+          onToggle={() => handleFilterToggle('pe')}
+          onApply={(minValue, maxValue) => handleApplyRangeFilter('minPe', 'maxPe', minValue, maxValue)}
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minPe', minValue);
+            handlePendingFilterUpdate('maxPe', maxValue);
+          }}
+          title="P/E Ratio"
+          minPlaceholder="Min P/E"
+          maxPlaceholder="Max P/E"
+          allowNegative={true}
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="forwardPe"
+          label="Forward P/E"
+          minKey="minForwardPe"
+          maxKey="maxForwardPe"
+          appliedMinValue={appliedFilters.minForwardPe}
+          appliedMaxValue={appliedFilters.maxForwardPe}
+          isOpen={openFilter === 'forwardPe'}
+          onToggle={() => handleFilterToggle('forwardPe')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minForwardPe', 'maxForwardPe', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minForwardPe', minValue);
+            handlePendingFilterUpdate('maxForwardPe', maxValue);
+          }}
+          title="Forward P/E Ratio"
+          minPlaceholder="Min Forward P/E"
+          maxPlaceholder="Max Forward P/E"
+          allowNegative={true}
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="dividend"
+          label="Dividend"
+          minKey="minDividendYield"
+          maxKey="maxDividendYield"
+          appliedMinValue={appliedFilters.minDividendYield}
+          appliedMaxValue={appliedFilters.maxDividendYield}
+          isOpen={openFilter === 'dividend'}
+          onToggle={() => handleFilterToggle('dividend')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minDividendYield', 'maxDividendYield', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minDividendYield', minValue);
+            handlePendingFilterUpdate('maxDividendYield', maxValue);
+          }}
+          title="Dividend Yield (%)"
+          minPlaceholder="Min %"
+          maxPlaceholder="Max %"
+          step={0.01}
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="payout"
+          label="Payout"
+          minKey="minPayoutRatio"
+          maxKey="maxPayoutRatio"
+          appliedMinValue={appliedFilters.minPayoutRatio}
+          appliedMaxValue={appliedFilters.maxPayoutRatio}
+          isOpen={openFilter === 'payout'}
+          onToggle={() => handleFilterToggle('payout')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minPayoutRatio', 'maxPayoutRatio', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minPayoutRatio', minValue);
+            handlePendingFilterUpdate('maxPayoutRatio', maxValue);
+          }}
+          title="Payout Ratio (%)"
+          minPlaceholder="Min %"
+          maxPlaceholder="Max %"
+          step={0.01}
+        />
+
+        <div className="filters-actions">
+          {hasDirtyFilters && (
+            <button
+              className="apply-all-button"
+              onClick={handleApplyAll}
+              title="Apply all pending filter changes"
+            >
+              Apply All
+              <span className="badge-count">{dirtyCount}</span>
+            </button>
+          )}
+          {appliedCount > 0 && (
+            <span className="filters-badge action-badge">
+              <i className="bi bi-funnel-fill"></i>
+              <span className="badge-count">{appliedCount}</span>
+            </span>
+          )}
+          <button
+            className="filter-reset-button"
+            onClick={handleReset}
+            disabled={appliedCount === 0 && !hasDirtyFilters}
+            title={appliedCount === 0 && !hasDirtyFilters ? 'No filters to reset' : 'Reset'}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Filters;

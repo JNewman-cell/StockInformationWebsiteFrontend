@@ -1,11 +1,62 @@
-import React from 'react';
+import { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { StackHandler, StackProvider, StackTheme } from '@stackframe/react';
+import { stackClientApp } from './stack';
+import { QUERY_CONFIG } from './config/constants';
+import Navbar from './navigation/Navbar';
+import Landing from './landingPage/Landing';
+import Dashboard from './dashboard/Dashboard';
+import Loading from './components/Loading';
+import './App.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: QUERY_CONFIG.REFETCH_ON_WINDOW_FOCUS,
+      retry: QUERY_CONFIG.RETRY_COUNT,
+      staleTime: QUERY_CONFIG.STALE_TIME.SEARCH,
+    },
+  },
+});
+
+function HandlerRoutes() {
+  const location = useLocation();
+
+  return (
+    <StackHandler app={stackClientApp} location={location.pathname} fullPage />
+  );
+}
+
+function AppContent() {
+  return (
+    <div className="app">
+      <Navbar />
+      <Routes>
+        <Route path="/handler/*" element={<HandlerRoutes />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div>
-      <h1>Stock Information Website</h1>
-      <p>Welcome to the Stock Information Website Frontend!</p>
-    </div>
+    <Suspense fallback={<Loading message="Loading application..." fullPage />}>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <StackProvider app={stackClientApp}>
+            <StackTheme>
+              <AppContent />
+            </StackTheme>
+          </StackProvider>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </Suspense>
   );
 }
 

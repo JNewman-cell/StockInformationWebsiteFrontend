@@ -4,20 +4,31 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run server.ts",
-    "build": "bun build src/index.tsx --outdir ./dist --target browser --minify",
-    "start": "bun run dev"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2"
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "vite": "^7.2.2"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@stackframe/react": "^2.8.49",
+    "@tanstack/react-query": "^5.90.7",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "bcryptjs": "^3.0.3",
+    "bootstrap-icons": "^1.13.1",
+    "jsonwebtoken": "^9.0.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.5"
   }
 }

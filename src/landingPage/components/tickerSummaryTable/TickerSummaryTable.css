@@ -1,0 +1,149 @@
+/* Stock Table - Enhanced */
+.stocks-table-container {
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin: 0 0 var(--space-6) 0;
+}
+
+/* When a pagination is placed directly under the table, allow it to
+   stretch the full width of the table container and sit visually
+   connected to the table bottom. The wrapper `.table-with-pagination`
+   is applied around the table + pagination in the landing page. */
+/* Pagination layout for table wrapper moved to
+   src/landingPage/components/pagination/Pagination.css */
+
+/* Table Controls */
+.table-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.table-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.table-control-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  white-space: nowrap;
+}
+
+.table-control-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-on-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.table-control-select:hover {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.table-control-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.stocks-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  font-size: 0.85rem;
+}
+
+.stocks-table thead {
+  background: var(--gradient-primary);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+}
+
+.stocks-table th {
+  text-align: left;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.7rem 0.85rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  transition: all var(--transition-base);
+}
+
+.stocks-table th:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.stocks-table tbody tr {
+  border-bottom: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+}
+
+.stocks-table tbody tr:hover {
+  background: linear-gradient(to right, rgba(59, 130, 246, 0.05), transparent);
+}
+
+.stocks-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.stocks-table td {
+  color: var(--color-text-on-surface);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.stock-symbol {
+  font-weight: 800;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  padding: 0.2rem 0.5rem;
+  display: inline-block;
+  border-left: 3px solid var(--color-primary);
+  padding-left: 0.6rem;
+}
+
+.stock-name {
+  color: var(--color-text-main);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+/* Sortable Headers - Enhanced */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+.sortable-header:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sortable-header.sorted {
+  background: rgba(255, 255, 255, 0.2);
+}
