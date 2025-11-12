@@ -108,35 +108,35 @@ const Landing: FC = () => {
 
       <div className="landing-content">
         <main className="landing-main" role="main">
-          {isLoading ? (
-            <Loading message="Loading results..." />
-          ) : searchResults ? (
+          {searchResults || isLoading ? (
             <section className="search-results" aria-labelledby="results-heading">
               <div className="results-header">
                 <h2 id="results-heading" className="heading-lg">
                   {hasSearched ? 'Search Results' : 'Stock Listings'}
                 </h2>
                 <p className="results-count">
-                  Showing {searchResults.stocks.length > 0 ?
-                    ((searchResults.page - 1) * searchResults.pageSize + 1) : 0} -{' '}
-                  {Math.min(searchResults.page * searchResults.pageSize, searchResults.total)} of{' '}
-                  {searchResults.total} results
+                  {isLoading ? 'Loading...' : searchResults ? (
+                    `Showing ${searchResults!.stocks.length > 0 ?
+                      ((searchResults!.page - 1) * searchResults!.pageSize + 1) : 0} - ${Math.min(searchResults!.page * searchResults!.pageSize, searchResults!.total)} of ${searchResults!.total} results`
+                  ) : ''}
                 </p>
               </div>
 
-              {searchResults.stocks.length > 0 ? (
+              {isLoading ? (
+                <Loading message="Loading results..." />
+              ) : searchResults && searchResults.stocks.length > 0 ? (
                 <>
                   <div className="table-with-pagination">
                     <TickerSummaryTable
-                      stocks={searchResults.stocks}
+                      stocks={searchResults!.stocks}
                       filters={filters}
                       onSort={handleSort}
                       onPageSizeChange={handlePageSizeChange}
                     />
 
-                    {searchResults.total_pages > 1 && (
+                    {searchResults!.total_pages > 1 && (
                       <Pagination
-                        searchResults={searchResults}
+                        searchResults={searchResults!}
                         handlePageChange={handlePageChange}
                         pageInputValue={pageInputValue}
                         setPageInputValue={setPageInputValue}
@@ -146,12 +146,12 @@ const Landing: FC = () => {
                     )}
                   </div>
                 </>
-              ) : (
+              ) : searchResults ? (
                 <div className="no-results">
                   <p>No stocks found matching your criteria.</p>
                   <p>Try adjusting your filters or search query.</p>
                 </div>
-              )}
+              ) : null}
             </section>
           ) : (
             <div className="welcome-section">
