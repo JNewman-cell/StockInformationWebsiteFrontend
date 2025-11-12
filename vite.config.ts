@@ -2,7 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: '/',
+  // Use a relative base so built assets are referenced relative to the
+  // generated `index.html`. This avoids absolute-root asset URLs like
+  // `/assets/...` which can break when deployed to GitHub Pages project
+  // sites (they must be relative or match the repo name). Using './'
+  // works for both project and user pages.
+  base: './',
   plugins: [react()],
   server: {
     port: 3000,
