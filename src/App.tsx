@@ -44,10 +44,14 @@ function AppContent() {
 }
 
 function App() {
+  // Get base path from Vite's base config for GitHub Pages support
+  // This ensures React Router knows about the /StockInformationWebsiteFrontend/ prefix
+  const basename = import.meta.env.BASE_URL || '/';
+
   return (
     <Suspense fallback={<Loading message="Loading application..." fullPage />}>
       <QueryClientProvider client={queryClient}>
-        <Router>
+        <Router basename={basename}>
           <StackProvider app={stackClientApp}>
             <StackTheme>
               <AppContent />
