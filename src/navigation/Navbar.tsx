@@ -36,6 +36,14 @@ const Navbar: FC = () => {
                 Home
               </NavLink>
             </li>
+            <li className="navbar-item">
+              <NavLink
+                to="/screener"
+                className={({ isActive }) => `navbar-link${isActive ? ' active' : ''}`}
+              >
+                Stock Screener
+              </NavLink>
+            </li>
             {user && (
               <li className="navbar-item">
                 <NavLink

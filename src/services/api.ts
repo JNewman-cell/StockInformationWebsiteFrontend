@@ -4,7 +4,7 @@ import type {
   StockSearchResponse,
   AutocompleteResponse,
 } from '../types';
-import type { FilterOptions } from '../landingPage/components/filterBar/types';
+import type { FilterOptions } from '../stockScreener/components/filterBar/types';
 
 export const stockAPI = {
   autocomplete: async (query: string): Promise<StockSuggestion[]> => {
@@ -81,6 +81,20 @@ export const stockAPI = {
     } catch (error) {
       console.error('Get stock error:', error);
       return null;
+    }
+  },
+
+  startup: async (): Promise<void> => {
+    try {
+      const response = await fetch(API_ENDPOINTS.startup);
+
+      if (!response.ok) {
+        throw new Error('Startup request failed');
+      }
+
+      console.log('Backend startup initiated');
+    } catch (error) {
+      console.error('Startup error:', error);
     }
   },
 };

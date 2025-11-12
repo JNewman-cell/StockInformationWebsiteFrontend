@@ -11,7 +11,7 @@ import {
   COLUMN_TO_API_FIELD,
 } from '../config/constants';
 import type { FilterOptions } from './components/filterBar/types';
-import './Landing.css';
+import './StockScreener.css';
 
 const Landing: FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

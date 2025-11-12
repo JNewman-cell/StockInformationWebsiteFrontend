@@ -6,9 +6,11 @@ import { StackHandler, StackProvider, StackTheme } from '@stackframe/react';
 import { stackClientApp } from './stack';
 import { QUERY_CONFIG } from './config/constants';
 import Navbar from './navigation/Navbar';
-import Landing from './landingPage/Landing';
+import LandingPage from './landingPage/LandingPage';
+import StockScreener from './stockScreener/StockScreener';
 import Dashboard from './dashboard/Dashboard';
 import Loading from './components/Loading';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -35,8 +37,16 @@ function AppContent() {
       <Navbar />
       <Routes>
         <Route path="/handler/*" element={<HandlerRoutes />} />
-        <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/screener" element={<StockScreener />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { stockAPI } from '../services/api';
 import { QUERY_CONFIG } from '../config/constants';
 import type { StockSuggestion } from '../types';
-import type { FilterOptions } from '../landingPage/components/filterBar/types';
+import type { FilterOptions } from '../stockScreener/components/filterBar/types';
 
 interface LegacyStockSearchResponse {
   stocks: Stock[];

@@ -1,1 +1,1 @@
-export * from '../landingPage/types/types';
+export * from '../stockScreener/types/types';
