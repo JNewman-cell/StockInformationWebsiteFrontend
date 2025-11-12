@@ -29,12 +29,19 @@ jobs:
         run: bun install
 
       - name: Build
-        run: npm run build
+        run: bun run build
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
           VITE_STACK_PROJECT_ID: ${{ secrets.VITE_STACK_PROJECT_ID }}
           VITE_STACK_PUBLISHABLE_CLIENT_KEY: ${{ secrets.VITE_STACK_PUBLISHABLE_CLIENT_KEY }}
           VITE_DATABASE_URL: ${{ secrets.VITE_DATABASE_URL }}
+
+      - name: Verify build output
+        run: |
+          echo "Checking dist directory contents..."
+          ls -la dist/
+          echo "Verifying 404.html exists..."
+          test -f dist/404.html && echo "✓ 404.html created" || echo "✗ 404.html missing"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
