@@ -11,7 +11,7 @@ const Navbar: FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          Stock Info
+          Market Ease
         </Link>
         <button
           className="navbar-toggler"

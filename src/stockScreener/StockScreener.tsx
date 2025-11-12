@@ -93,7 +93,7 @@ const Landing: FC = () => {
   return (
     <div className="landing-page">
       <header className="landing-hero" role="banner">
-        <h1 className="landing-title">Stock Information Portal</h1>
+        <h1 className="landing-title">Market Ease</h1>
         <p className="landing-subtitle">
           Search and discover real-time stock information with powerful filters
         </p>
@@ -155,7 +155,7 @@ const Landing: FC = () => {
             </section>
           ) : (
             <div className="welcome-section">
-              <h2>Welcome to Stock Information Portal</h2>
+              <h2>Welcome to Market Ease</h2>
               <p>
                 Use the search bar above to find stocks by symbol or company name.
                 Apply filters on the left to narrow down your search.

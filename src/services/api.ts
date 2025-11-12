@@ -5,6 +5,25 @@ import type {
   AutocompleteResponse,
 } from '../types';
 import type { FilterOptions } from '../stockScreener/components/filterBar/types';
+import { stackClientApp } from '../stack';
+
+// Helper function to get auth headers
+const getAuthHeaders = async (): Promise<Record<string, string>> => {
+  try {
+    const user = await stackClientApp.getUser();
+    if (user) {
+      const authJson = await user.getAuthJson();
+      if (authJson.accessToken) {
+        return {
+          'Authorization': `Bearer ${authJson.accessToken}`,
+        };
+      }
+    }
+  } catch (error) {
+    console.warn('No authenticated user found:', error);
+  }
+  return {};
+};
 
 export const stockAPI = {
   autocomplete: async (query: string): Promise<StockSuggestion[]> => {
@@ -71,7 +90,8 @@ export const stockAPI = {
 
   getStock: async (symbol: string) => {
     try {
-      const response = await fetch(API_ENDPOINTS.getStock(symbol));
+      const headers = await getAuthHeaders();
+      const response = await fetch(API_ENDPOINTS.getStock(symbol), { headers });
 
       if (!response.ok) {
         throw new Error('Failed to fetch stock');
@@ -81,20 +101,6 @@ export const stockAPI = {
     } catch (error) {
       console.error('Get stock error:', error);
       return null;
-    }
-  },
-
-  startup: async (): Promise<void> => {
-    try {
-      const response = await fetch(API_ENDPOINTS.startup);
-
-      if (!response.ok) {
-        throw new Error('Startup request failed');
-      }
-
-      console.log('Backend startup initiated');
-    } catch (error) {
-      console.error('Startup error:', error);
     }
   },
 };

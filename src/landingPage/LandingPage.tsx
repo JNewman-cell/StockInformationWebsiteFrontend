@@ -1,16 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useUser, useStackApp } from '@stackframe/react';
-import { useEffect } from 'react';
-import { stockAPI } from '../services/api';
 import './LandingPage.css';
 
 const LandingPage = () => {
   const user = useUser();
   const app = useStackApp();
-
-  useEffect(() => {
-    stockAPI.startup();
-  }, []);
 
   return (
     <div className="landing-page">
@@ -432,7 +426,7 @@ const LandingPage = () => {
       <footer className="landing-footer">
         <div className="footer-content">
           <div className="footer-info">
-            <h3>Stock Information Website</h3>
+            <h3>Market Ease</h3>
             <p>Open source financial data platform • Built with ❤️ by Jackson Newman</p>
           </div>
           <div className="footer-links">

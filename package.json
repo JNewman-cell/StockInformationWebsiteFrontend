@@ -1,5 +1,5 @@
 {
-  "name": "stockinformationwebsitefrontend",
+  "name": "market-ease",
   "module": "src/index.tsx",
   "type": "module",
   "private": true,

@@ -1,4 +1,4 @@
-# Stock Information Website Frontend
+# Market Ease
 
 A modern, full-featured React TypeScript web application for searching and viewing stock information with authentication, advanced filters, pagination, sorting, and real-time autocomplete.
 
