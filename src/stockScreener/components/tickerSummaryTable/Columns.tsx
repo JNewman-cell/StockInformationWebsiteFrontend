@@ -21,7 +21,7 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           }
           onClick={() => onSort('Symbol')}
         >
-          Symbol {filters.sortBy === 'ticker' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          Symbol {filters.sortBy === 'ticker' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
         <th
           className={`sortable-header ${filters.sortBy === 'company_name' ? 'sorted' : ''}`}
@@ -34,7 +34,20 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           }
           onClick={() => onSort('Name')}
         >
-          Name {filters.sortBy === 'company_name' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          Name {filters.sortBy === 'company_name' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
+        </th>
+        <th
+          className={`sortable-header ${filters.sortBy === 'market_cap' ? 'sorted' : ''}`}
+          scope="col"
+          role="columnheader"
+          aria-sort={
+            filters.sortBy === 'market_cap' ?
+              (filters.sortOrder === 'ASC' ? 'ascending' : 'descending') :
+              'none'
+          }
+          onClick={() => onSort('Market Cap')}
+        >
+          Market Cap {filters.sortBy === 'market_cap' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
         <th
           className={`sortable-header ${filters.sortBy === 'previous_close' ? 'sorted' : ''}`}
@@ -48,8 +61,10 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           onClick={() => onSort('Previous Close')}
         >
           Previous Close{' '}
-          {filters.sortBy === 'previous_close' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          {filters.sortBy === 'previous_close' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
+        <th>50-Day Avg</th>
+        <th>200-Day Avg</th>
         <th
           className={`sortable-header ${filters.sortBy === 'pe' ? 'sorted' : ''}`}
           scope="col"
@@ -61,7 +76,7 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           }
           onClick={() => onSort('P/E Ratio')}
         >
-          P/E Ratio {filters.sortBy === 'pe' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          P/E Ratio {filters.sortBy === 'pe' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
         <th
           className={`sortable-header ${filters.sortBy === 'forward_pe' ? 'sorted' : ''}`}
@@ -74,7 +89,7 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           }
           onClick={() => onSort('Forward P/E')}
         >
-          Forward P/E {filters.sortBy === 'forward_pe' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          Forward P/E {filters.sortBy === 'forward_pe' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
         <th
           className={`sortable-header ${filters.sortBy === 'dividend_yield' ? 'sorted' : ''}`}
@@ -88,20 +103,7 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           onClick={() => onSort('Dividend Yield')}
         >
           Dividend Yield{' '}
-          {filters.sortBy === 'dividend_yield' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
-        </th>
-        <th
-          className={`sortable-header ${filters.sortBy === 'market_cap' ? 'sorted' : ''}`}
-          scope="col"
-          role="columnheader"
-          aria-sort={
-            filters.sortBy === 'market_cap' ?
-              (filters.sortOrder === 'ASC' ? 'ascending' : 'descending') :
-              'none'
-          }
-          onClick={() => onSort('Market Cap')}
-        >
-          Market Cap {filters.sortBy === 'market_cap' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          {filters.sortBy === 'dividend_yield' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
         <th
           className={`sortable-header ${filters.sortBy === 'payout_ratio' ? 'sorted' : ''}`}
@@ -114,10 +116,9 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
           }
           onClick={() => onSort('Payout Ratio')}
         >
-          Payout Ratio {filters.sortBy === 'payout_ratio' ? (filters.sortOrder === 'ASC' ? '↑' : '↓') : '↕'}
+          Payout Ratio {filters.sortBy === 'payout_ratio' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
-        <th>50-Day Avg</th>
-        <th>200-Day Avg</th>
+        
       </tr>
     </thead>
   );

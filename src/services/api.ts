@@ -5,6 +5,7 @@ import type {
   AutocompleteResponse,
 } from '../types';
 import type { FilterOptions } from '../stockScreener/components/filterBar/types';
+import type { StockDetailsSummary } from '../stockScreener/pages/stockDetailsPage/components/stockDetailsSummary/types';
 import { stackClientApp } from '../stack';
 
 // Helper function to get auth headers
@@ -101,6 +102,21 @@ export const stockAPI = {
     } catch (error) {
       console.error('Get stock error:', error);
       return null;
+    }
+  },
+
+  getStockDetails: async (symbol: string): Promise<StockDetailsSummary & { companyName?: string }> => {
+    try {
+      const response = await fetch(API_ENDPOINTS.getStockDetails(symbol));
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch stock details');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get stock details error:', error);
+      throw error;
     }
   },
 };

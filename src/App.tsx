@@ -8,6 +8,7 @@ import { QUERY_CONFIG } from './config/constants';
 import Navbar from './navigation/Navbar';
 import LandingPage from './landingPage/LandingPage';
 import StockScreener from './stockScreener/StockScreener';
+import StockDetails from './stockScreener/pages/stockDetailsPage/StockDetails';
 import Dashboard from './dashboard/Dashboard';
 import Loading from './components/Loading';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -39,6 +40,7 @@ function AppContent() {
         <Route path="/handler/*" element={<HandlerRoutes />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/screener" element={<StockScreener />} />
+        <Route path="/screener/:ticker/details" element={<StockDetails />} />
         <Route
           path="/dashboard"
           element={

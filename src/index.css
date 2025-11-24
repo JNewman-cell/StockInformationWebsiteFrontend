@@ -1,5 +1,6 @@
 @import url('./styles/theme.css');
 @import url('./styles/utilities.css');
+@import url('bootstrap-icons/font/bootstrap-icons.css');
 
 * {
   margin: 0;
@@ -29,6 +30,8 @@ html, body, #root {
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;
+  /* Increase base font size so rem-scaled components become slightly larger */
+  font-size: 112.5%; /* ~18px base to make fonts larger across the app */
 }
 
 /* Container utility (optional) */
@@ -56,7 +59,7 @@ html {
 }
 
 .page-title {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: var(--color-text-main);
   letter-spacing: -0.02em;
@@ -66,4 +69,5 @@ html {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding: 0.4rem 0; /* extra space for titles */
 }

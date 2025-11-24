@@ -124,6 +124,18 @@
   padding-left: 0.6rem;
 }
 
+.ticker-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  font-weight: 800;
+}
+
+.ticker-link:hover {
+  color: var(--color-primary-hover, #1d4ed8);
+  text-decoration: underline;
+}
+
 .stock-name {
   color: var(--color-text-main);
   max-width: 200px;
@@ -146,4 +158,11 @@
 
 .sortable-header.sorted {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.sortable-header i.bi {
+  font-size: 0.85rem;
+  margin-left: 0.35rem;
+  vertical-align: -0.1rem;
+  color: rgba(255,255,255,0.95);
 }

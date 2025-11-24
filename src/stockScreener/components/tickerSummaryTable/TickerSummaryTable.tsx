@@ -1,5 +1,6 @@
 import type { FC, ChangeEvent } from 'react';
 import { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import type { Stock } from '../../types/types';
 import type { FilterOptions } from '../filterBar/types';
 import Columns from './Columns';
@@ -50,16 +51,20 @@ const TickerSummaryTable: FC<TickerSummaryTableProps> = ({
         <tbody>
           {stocks.map((stock: Stock) => (
             <tr key={stock.ticker}>
-              <td className="stock-symbol">{stock.ticker}</td>
+              <td className="stock-symbol">
+                <Link to={`/screener/${stock.ticker}/details`} className="ticker-link">
+                  {stock.ticker}
+                </Link>
+              </td>
               <td className="stock-name">{stock.companyName}</td>
+              <td>{formatMarketCap(stock.marketCap)}</td>
               <td>{formatCurrency(stock.previousClose)}</td>
+              <td>{formatCurrency(stock.fiftyDayAverage)}</td>
+              <td>{formatCurrency(stock.twoHundredDayAverage)}</td>
               <td>{formatNumber(stock.peRatio)}</td>
               <td>{formatNumber(stock.forwardPeRatio)}</td>
               <td>{formatPercent(stock.dividendYield)}</td>
-              <td>{formatMarketCap(stock.marketCap)}</td>
               <td>{formatPercent(stock.payoutRatio)}</td>
-              <td>{formatCurrency(stock.fiftyDayAverage)}</td>
-              <td>{formatCurrency(stock.twoHundredDayAverage)}</td>
             </tr>
           ))}
         </tbody>
