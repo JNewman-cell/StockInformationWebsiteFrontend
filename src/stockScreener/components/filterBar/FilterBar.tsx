@@ -1,8 +1,9 @@
 import type { FC } from 'react';
 import { useState, useCallback } from 'react';
-import { FILTER_DEFAULTS } from '../../../config/constants';
+import { FILTER_DEFAULTS, MARKET_CAP_RANGES } from '../../../config/constants';
 import type { FilterOptions, FilterChangeHandler } from './types';
 import RangeFilter from './components/RangeFilter';
+import MarketCapFilter from './components/MarketCapFilter';
 import './FilterBar.css';
 
 const getAppliedFiltersCount = (filters: FilterOptions): number => {
@@ -16,6 +17,8 @@ const getAppliedFiltersCount = (filters: FilterOptions): number => {
     'maxForwardPe',
     'minDividendYield',
     'maxDividendYield',
+    'minAnnualDividendGrowth',
+    'maxAnnualDividendGrowth',
     'minMarketCap',
     'maxMarketCap',
     'minPayoutRatio',
@@ -28,6 +31,10 @@ const getAppliedFiltersCount = (filters: FilterOptions): number => {
     }
   });
 
+  if (filters.marketCapCategories && filters.marketCapCategories.length > 0) {
+    count++;
+  }
+
   return count;
 };
 
@@ -39,7 +46,8 @@ const getDirtyFilterTypesCount = (dirtyFilters: Set<keyof FilterOptions>): numbe
     if (field.includes('PreviousClose')) filterType = 'price';
     else if (field.includes('Pe') && !field.includes('Forward')) filterType = 'pe';
     else if (field.includes('ForwardPe')) filterType = 'forwardPe';
-    else if (field.includes('Dividend')) filterType = 'dividend';
+    else if (field.includes('DividendYield')) filterType = 'dividend';
+    else if (field.includes('DividendGrowth')) filterType = 'dividendGrowth';
     else if (field.includes('MarketCap')) filterType = 'marketCap';
     else if (field.includes('Payout')) filterType = 'payout';
 
@@ -149,6 +157,76 @@ const Filters: FC<FiltersProps> = ({ onFilterChange }) => {
     setOpenFilter(current => current === filterKey ? null : filterKey);
   }, []);
 
+  const handleApplyMarketCapCategories = useCallback((categories: string[]) => {
+    // Convert categories to min/max market cap ranges
+    let minMarketCap: number | undefined = undefined;
+    let maxMarketCap: number | undefined = undefined;
+
+    if (categories.length > 0) {
+      const mins: number[] = [];
+      const maxs: number[] = [];
+
+      categories.forEach(category => {
+        const range = MARKET_CAP_RANGES[category as keyof typeof MARKET_CAP_RANGES];
+        if (range) {
+          if (range.min !== undefined) mins.push(range.min);
+          if (range.max !== undefined) maxs.push(range.max);
+        }
+      });
+
+      minMarketCap = mins.length > 0 ? Math.min(...mins) : undefined;
+      maxMarketCap = maxs.length > 0 ? Math.max(...maxs) : undefined;
+    }
+
+    const updated: FilterOptions = {
+      ...appliedFilters,
+      marketCapCategories: categories,
+      minMarketCap,
+      maxMarketCap,
+      page: 1,
+    } as FilterOptions;
+
+    setAppliedFilters(updated);
+    setPendingFilters(prev => ({
+      ...prev,
+      marketCapCategories: categories,
+      minMarketCap,
+      maxMarketCap,
+    }));
+
+    setDirtyFilters(prev => {
+      const newDirty = new Set(prev);
+      newDirty.delete('marketCapCategories');
+      newDirty.delete('minMarketCap');
+      newDirty.delete('maxMarketCap');
+      return newDirty;
+    });
+
+    setOpenFilter(null);
+    try {
+      (document.activeElement as HTMLElement | null)?.blur();
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+
+    Promise.resolve().then(() => onFilterChange(updated));
+  }, [onFilterChange, appliedFilters]);
+
+  const handlePendingMarketCapCategories = useCallback((categories: string[]) => {
+    setPendingFilters(prev => ({ ...prev, marketCapCategories: categories }));
+
+    setDirtyFilters(prev => {
+      const newDirty = new Set(prev);
+      const currentCategories = appliedFilters.marketCapCategories || [];
+      if (JSON.stringify([...categories].sort()) !== JSON.stringify([...currentCategories].sort())) {
+        newDirty.add('marketCapCategories');
+      } else {
+        newDirty.delete('marketCapCategories');
+      }
+      return newDirty;
+    });
+  }, [appliedFilters]);
+
   // number of individual dirty filter fields (min/max keys)
   const dirtyCount = dirtyFilters.size;
   const hasDirtyFilters = dirtyCount > 0;
@@ -182,26 +260,13 @@ const Filters: FC<FiltersProps> = ({ onFilterChange }) => {
           maxPlaceholder="Max"
         />
 
-        <RangeFilter
+        <MarketCapFilter
           resetSignal={resetCounter}
-          filterKey="marketCap"
-          label="Market Cap"
-          minKey="minMarketCap"
-          maxKey="maxMarketCap"
-          appliedMinValue={appliedFilters.minMarketCap}
-          appliedMaxValue={appliedFilters.maxMarketCap}
+          appliedCategories={appliedFilters.marketCapCategories || []}
           isOpen={openFilter === 'marketCap'}
           onToggle={() => handleFilterToggle('marketCap')}
-          onApply={(minValue, maxValue) =>
-            handleApplyRangeFilter('minMarketCap', 'maxMarketCap', minValue, maxValue)
-          }
-          onPendingChange={(minValue, maxValue) => {
-            handlePendingFilterUpdate('minMarketCap', minValue);
-            handlePendingFilterUpdate('maxMarketCap', maxValue);
-          }}
-          title="Market Cap"
-          minPlaceholder="Min"
-          maxPlaceholder="Max"
+          onApply={handleApplyMarketCapCategories}
+          onPendingChange={handlePendingMarketCapCategories}
         />
 
         <RangeFilter
@@ -269,6 +334,30 @@ const Filters: FC<FiltersProps> = ({ onFilterChange }) => {
           minPlaceholder="Min %"
           maxPlaceholder="Max %"
           step={0.01}
+        />
+
+        <RangeFilter
+          resetSignal={resetCounter}
+          filterKey="dividendGrowth"
+          label="Dividend Growth"
+          minKey="minAnnualDividendGrowth"
+          maxKey="maxAnnualDividendGrowth"
+          appliedMinValue={appliedFilters.minAnnualDividendGrowth}
+          appliedMaxValue={appliedFilters.maxAnnualDividendGrowth}
+          isOpen={openFilter === 'dividendGrowth'}
+          onToggle={() => handleFilterToggle('dividendGrowth')}
+          onApply={(minValue, maxValue) =>
+            handleApplyRangeFilter('minAnnualDividendGrowth', 'maxAnnualDividendGrowth', minValue, maxValue)
+          }
+          onPendingChange={(minValue, maxValue) => {
+            handlePendingFilterUpdate('minAnnualDividendGrowth', minValue);
+            handlePendingFilterUpdate('maxAnnualDividendGrowth', maxValue);
+          }}
+          title="Annual Dividend Growth (%)"
+          minPlaceholder="Min %"
+          maxPlaceholder="Max %"
+          step={0.01}
+          allowNegative={true}
         />
 
         <RangeFilter

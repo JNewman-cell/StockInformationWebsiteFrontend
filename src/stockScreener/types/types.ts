@@ -7,6 +7,8 @@ export interface Stock {
   forwardPeRatio?: number;
   dividendYield?: number;
   payoutRatio?: number;
+  annualDividendGrowth?: number;
+  fiveYearAvgDividendYield?: number;
   fiftyDayAverage?: number;
   twoHundredDayAverage?: number;
 }

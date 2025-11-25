@@ -166,3 +166,28 @@
   vertical-align: -0.1rem;
   color: rgba(255,255,255,0.95);
 }
+
+/* Dividend Growth Styling */
+.dividend-growth {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.dividend-growth.positive {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.dividend-growth.negative {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.dividend-growth i.bi {
+  font-size: 1rem;
+}

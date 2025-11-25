@@ -118,6 +118,21 @@ const Columns: FC<ColumnsProps> = ({ filters, onSort }) => {
         >
           Payout Ratio {filters.sortBy === 'payout_ratio' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
         </th>
+        <th
+          className={`sortable-header ${filters.sortBy === 'annual_dividend_growth' ? 'sorted' : ''}`}
+          scope="col"
+          role="columnheader"
+          aria-sort={
+            filters.sortBy === 'annual_dividend_growth' ?
+              (filters.sortOrder === 'ASC' ? 'ascending' : 'descending') :
+              'none'
+          }
+          onClick={() => onSort('Dividend Growth')}
+        >
+          Dividend Growth{' '}
+          {filters.sortBy === 'annual_dividend_growth' ? (filters.sortOrder === 'ASC' ? <i className="bi bi-arrow-up-short" /> : <i className="bi bi-arrow-down-short" />) : <i className="bi bi-arrow-down-up" />}
+        </th>
+        <th>5-Year Avg Dividend Yield</th>
         
       </tr>
     </thead>

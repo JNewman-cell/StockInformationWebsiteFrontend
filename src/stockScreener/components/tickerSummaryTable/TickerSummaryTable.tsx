@@ -1,4 +1,4 @@
-import type { FC, ChangeEvent } from 'react';
+import type { FC, ChangeEvent, ReactNode } from 'react';
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import type { Stock } from '../../types/types';
@@ -7,6 +7,17 @@ import Columns from './Columns';
 import { formatCurrency, formatNumber, formatPercent, formatMarketCap } from './utils/utils';
 import { PAGINATION_CONFIG, API_CONFIG } from '../../../config/constants';
 import './TickerSummaryTable.css';
+
+const formatDividendGrowth = (value?: number): ReactNode => {
+  if (value === undefined || value === null) return 'N/A';
+  const isPositive = value >= 0;
+  const iconClass = isPositive ? 'bi-arrow-up-short' : 'bi-arrow-down-short';
+  return (
+    <span className={`dividend-growth ${isPositive ? 'positive' : 'negative'}`}>
+      <i className={`bi ${iconClass}`} aria-hidden="true" /> {formatPercent(value)}
+    </span>
+  );
+};
 
 interface TickerSummaryTableProps {
   stocks: Stock[];
@@ -65,6 +76,8 @@ const TickerSummaryTable: FC<TickerSummaryTableProps> = ({
               <td>{formatNumber(stock.forwardPeRatio)}</td>
               <td>{formatPercent(stock.dividendYield)}</td>
               <td>{formatPercent(stock.payoutRatio)}</td>
+              <td>{formatDividendGrowth(stock.annualDividendGrowth)}</td>
+              <td>{formatPercent(stock.fiveYearAvgDividendYield)}</td>
             </tr>
           ))}
         </tbody>

@@ -39,6 +39,16 @@ export const COLUMN_TO_API_FIELD: Record<string, string> = {
   'Dividend Yield': 'dividend_yield',
   'Market Cap': 'market_cap',
   'Payout Ratio': 'payout_ratio',
+  'Dividend Growth': 'annual_dividend_growth',
   '50-Day Avg': 'fifty_day_average',
   '200-Day Avg': 'two_hundred_day_average',
+} as const;
+
+export const MARKET_CAP_RANGES = {
+  'Mega Cap': { min: 200000000000, max: undefined, label: 'Mega Cap ($200B+)' },
+  'Large Cap': { min: 10000000000, max: 200000000000, label: 'Large Cap ($10B - $200B)' },
+  'Mid Cap': { min: 2000000000, max: 10000000000, label: 'Mid Cap ($2B - $10B)' },
+  'Small Cap': { min: 300000000, max: 2000000000, label: 'Small Cap ($300M - $2B)' },
+  'Micro Cap': { min: 50000000, max: 300000000, label: 'Micro Cap ($50M - $300M)' },
+  'Nano Cap': { min: undefined, max: 50000000, label: 'Nano Cap (<$50M)' },
 } as const;

@@ -23,9 +23,14 @@ export interface FilterOptions {
   minDividendYield?: number;
   maxDividendYield?: number;
 
+  // Dividend growth filters
+  minAnnualDividendGrowth?: number;
+  maxAnnualDividendGrowth?: number;
+
   // Market cap filters
   minMarketCap?: number;
   maxMarketCap?: number;
+  marketCapCategories?: string[];
 
   // Payout ratio filters
   minPayoutRatio?: number;
