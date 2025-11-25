@@ -1,5 +1,5 @@
 import type { FC, ChangeEvent } from 'react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { MARKET_CAP_RANGES } from '../../../../config/constants';
 import './MarketCapFilter.css';
 
@@ -21,9 +21,15 @@ const MarketCapFilter: FC<MarketCapFilterProps> = ({
   onPendingChange,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(appliedCategories);
+  const prevAppliedRef = useRef<string>(JSON.stringify(appliedCategories.sort()));
 
+  // Only sync when appliedCategories actually changes (after apply or from parent)
   useEffect(() => {
-    setSelectedCategories(appliedCategories);
+    const currentApplied = JSON.stringify([...appliedCategories].sort());
+    if (currentApplied !== prevAppliedRef.current) {
+      prevAppliedRef.current = currentApplied;
+      setSelectedCategories(appliedCategories);
+    }
   }, [appliedCategories]);
 
   useEffect(() => {
@@ -32,49 +38,48 @@ const MarketCapFilter: FC<MarketCapFilterProps> = ({
 
   const handleCheckboxChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const category = e.target.value;
-    const newCategories = e.target.checked
-      ? [...selectedCategories, category]
-      : selectedCategories.filter(c => c !== category);
+    const isChecked = e.target.checked;
     
-    setSelectedCategories(newCategories);
-    onPendingChange(newCategories);
-  }, [selectedCategories, onPendingChange]);
+    setSelectedCategories(prev => 
+      isChecked
+        ? [...prev, category]
+        : prev.filter(c => c !== category)
+    );
+  }, []);
 
   const handleApply = useCallback(() => {
     onApply(selectedCategories);
   }, [selectedCategories, onApply]);
 
-  const handleClear = useCallback(() => {
-    setSelectedCategories([]);
-    onPendingChange([]);
-  }, [onPendingChange]);
-
   const hasSelection = selectedCategories.length > 0;
   const isDirty = JSON.stringify([...selectedCategories].sort()) !== JSON.stringify([...appliedCategories].sort());
+  const displayCount = isDirty && hasSelection ? selectedCategories.length : appliedCategories.length;
+  const isActive = appliedCategories.length > 0;
 
   return (
-    <div className="filter-dropdown-wrapper">
+    <div className="filter-dropdown-container">
       <button
-        className={`filter-button ${hasSelection || appliedCategories.length > 0 ? 'active' : ''} ${isOpen ? 'open' : ''}`}
+        className={`filter-dropdown-button ${isDirty ? 'dirty' : ''} ${isActive ? 'active' : ''}`}
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-haspopup="true"
         type="button"
       >
-        Market Cap
-        {appliedCategories.length > 0 && (
-          <span className="filter-badge">{appliedCategories.length}</span>
-        )}
-        <i className={`bi bi-chevron-${isOpen ? 'up' : 'down'}`} />
+        <span className="filter-label-with-badge">
+          <span className="label-text">Market Cap</span>
+          {displayCount > 0 && (
+            <span className="count-badge">{displayCount}</span>
+          )}
+          {isDirty && !hasSelection && <span className="dirty-indicator">*</span>}
+        </span>
+        <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>▼</span>
       </button>
 
       {isOpen && (
-        <div className="filter-dropdown market-cap-filter">
-          <div className="filter-dropdown-header">
-            <h3 className="filter-dropdown-title">Market Cap Categories</h3>
-          </div>
-
+        <div className="filter-dropdown">
           <div className="filter-dropdown-content">
+            <h4>Market Cap Categories</h4>
+
             <div className="market-cap-checkboxes">
               {Object.entries(MARKET_CAP_RANGES).map(([key, value]) => (
                 <label key={key} className="checkbox-label">
@@ -90,24 +95,17 @@ const MarketCapFilter: FC<MarketCapFilterProps> = ({
                 </label>
               ))}
             </div>
-          </div>
 
-          <div className="filter-dropdown-actions">
             <button
-              className="filter-action-button secondary"
-              onClick={handleClear}
-              disabled={!hasSelection}
-              type="button"
-            >
-              Clear
-            </button>
-            <button
-              className="filter-action-button primary"
+              className="apply-filter-button"
               onClick={handleApply}
               disabled={!isDirty}
               type="button"
             >
-              Apply
+              Apply Market Cap
+              {selectedCategories.length > 0 && (
+                <span className="apply-count-badge">{selectedCategories.length}</span>
+              )}
             </button>
           </div>
         </div>

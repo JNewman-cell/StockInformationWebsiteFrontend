@@ -150,7 +150,7 @@ const RangeFilter: FC<RangeFilterProps> = ({
   return (
   <div className="filter-dropdown-container" ref={containerRef}>
       <button
-        className={`filter-dropdown-button ${hasPendingValues ? 'dirty' : ''}`}
+        className={`filter-dropdown-button ${hasPendingValues ? 'dirty' : ''} ${appliedCount > 0 ? 'active' : ''}`}
         onClick={onToggle}
       >
         <span className="filter-label-with-badge">

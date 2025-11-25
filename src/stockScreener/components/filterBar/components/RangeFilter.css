@@ -12,18 +12,23 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   transition: all var(--transition-base);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  min-width: 100px;
+  width: auto;
   justify-content: space-between;
+  white-space: nowrap;
 }
 
 .filter-label-with-badge {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+
+.label-text {
+  white-space: nowrap;
 }
 
 .count-badge {
@@ -56,6 +61,20 @@
   color: var(--color-primary);
 }
 
+.filter-dropdown-button.active {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.05);
+  color: var(--color-primary);
+}
+
+.filter-dropdown-button.active .label-text {
+  color: var(--color-primary);
+}
+
+.filter-dropdown-button.active .dropdown-arrow {
+  color: var(--color-primary);
+}
+
 .dropdown-arrow {
   font-size: 0.7rem;
   transition: transform var(--transition-base);
@@ -69,7 +88,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  right: 0;
+  right: auto;
   z-index: 1000;
   margin-top: var(--space-1);
 }
@@ -81,6 +100,7 @@
   padding: var(--space-3);
   box-shadow: var(--shadow-xl);
   min-width: 200px;
+  width: max-content;
 }
 
 .filter-dropdown-content h4 {

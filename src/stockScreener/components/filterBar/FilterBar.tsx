@@ -159,23 +159,44 @@ const Filters: FC<FiltersProps> = ({ onFilterChange }) => {
 
   const handleApplyMarketCapCategories = useCallback((categories: string[]) => {
     // Convert categories to min/max market cap ranges
+    // For multiple categories, we want the overall min and max across all selections
     let minMarketCap: number | undefined = undefined;
     let maxMarketCap: number | undefined = undefined;
 
     if (categories.length > 0) {
-      const mins: number[] = [];
-      const maxs: number[] = [];
+      const allValues: number[] = [];
 
       categories.forEach(category => {
         const range = MARKET_CAP_RANGES[category as keyof typeof MARKET_CAP_RANGES];
         if (range) {
-          if (range.min !== undefined) mins.push(range.min);
-          if (range.max !== undefined) maxs.push(range.max);
+          if (range.min !== undefined) allValues.push(range.min);
+          if (range.max !== undefined) allValues.push(range.max);
         }
       });
 
-      minMarketCap = mins.length > 0 ? Math.min(...mins) : undefined;
-      maxMarketCap = maxs.length > 0 ? Math.max(...maxs) : undefined;
+      // Get the absolute min and max across all selected categories
+      if (allValues.length > 0) {
+        minMarketCap = Math.min(...allValues);
+        maxMarketCap = Math.max(...allValues);
+      }
+
+      // Handle edge case: if a category has no min (like Nano Cap), set minMarketCap to undefined
+      const hasOpenLowerBound = categories.some(cat => {
+        const range = MARKET_CAP_RANGES[cat as keyof typeof MARKET_CAP_RANGES];
+        return range && range.min === undefined;
+      });
+      if (hasOpenLowerBound) {
+        minMarketCap = undefined;
+      }
+
+      // Handle edge case: if a category has no max (like Mega Cap), set maxMarketCap to undefined
+      const hasOpenUpperBound = categories.some(cat => {
+        const range = MARKET_CAP_RANGES[cat as keyof typeof MARKET_CAP_RANGES];
+        return range && range.max === undefined;
+      });
+      if (hasOpenUpperBound) {
+        maxMarketCap = undefined;
+      }
     }
 
     const updated: FilterOptions = {

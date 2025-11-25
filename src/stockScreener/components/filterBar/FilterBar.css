@@ -83,8 +83,7 @@
    keeping actions pinned to the end of the row. Each filter will have a
    sensible minimum width so it doesn't shrink too small. */
 .filters-row .filter-dropdown-container {
-  flex: 1 1 0;
-  min-width: 120px;
+  width: fit-content;
 }
 
 .filters-row .filter-dropdown-button {
@@ -105,7 +104,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  min-width: 100px;
   justify-content: space-between;
 }
 
